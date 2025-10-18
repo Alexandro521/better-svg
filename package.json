@@ -13,7 +13,7 @@
     "url": "https://github.com/midudev/better-svg"
   },
   "engines": {
-    "vscode": "^1.85.0"
+    "vscode": "^1.100.0"
   },
   "categories": [
     "Other"
@@ -39,12 +39,22 @@
         "command": "betterSvg.optimize",
         "title": "Optimize SVG",
         "icon": "$(zap)"
+      },
+      {
+        "command": "betterSvg.exportWebp",
+        "title": "Export to WEBP",
+        "icon": "$(save)"
       }
     ],
     "menus": {
       "editor/title": [
         {
           "command": "betterSvg.optimize",
+          "when": "resourceExtname == .svg",
+          "group": "navigation"
+        },
+        {
+          "command": "betterSvg.exportWebp",
           "when": "resourceExtname == .svg",
           "group": "navigation"
         }
@@ -68,6 +78,20 @@
           "default": "#ffffff",
           "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
           "description": "Default color for currentColor in the SVG preview (hex format, e.g., #ffffff)"
+        },
+        "betterSvg.webpQuality": {
+          "type": "number",
+          "default": 80,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Quality for WEBP export (0-100, where 100 is best quality)"
+        },
+        "betterSvg.webpWidth": {
+          "type": "number",
+          "default": 1024,
+          "minimum": 64,
+          "maximum": 8192,
+          "description": "Default width in pixels for WEBP export (height scales proportionally)"
         }
       }
     }
@@ -83,7 +107,7 @@
   },
   "devDependencies": {
     "@types/node": "24.x",
-    "@types/vscode": "1.105.0",
+    "@types/vscode": "1.100.0",
     "@typescript-eslint/eslint-plugin": "8.46.1",
     "@typescript-eslint/parser": "8.46.1",
     "eslint": "9.38.0",

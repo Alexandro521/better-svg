@@ -85,9 +85,28 @@ Luego presiona `F5` en VS Code para abrir una ventana de extensión para probar.
 
 ## Compilar
 
+### Desarrollo
+
 ```bash
+# Compilación única
 npm run compile
+
+# Watch mode (recompila automáticamente al guardar)
+npm run watch
 ```
+
+### Producción
+
+```bash
+# Build optimizado para producción (minificado)
+npm run package
+```
+
+La extensión usa **esbuild** para bundling, lo que significa:
+- ✅ **Más rápida**: El bundle se carga instantáneamente
+- ✅ **Más pequeña**: ~500KB vs múltiples archivos
+- ✅ **Compatible con web**: Funciona en github.dev y vscode.dev
+- ✅ **Type checking**: TypeScript verifica tipos sin emitir archivos
 
 ## Empaquetar
 
@@ -95,6 +114,8 @@ npm run compile
 npm install -g @vscode/vsce
 vsce package
 ```
+
+Esto creará un archivo `.vsix` que puede ser instalado o publicado en el marketplace.
 
 ## Licencia
 

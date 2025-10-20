@@ -2,10 +2,11 @@
   "name": "better-svg",
   "displayName": "Better SVG",
   "description": "Live SVG preview with color picker, zoom controls, and SVGO optimization.",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "midudev",
   "author": {
-    "name": "Miguel Ángel Durán"
+    "name": "Miguel Ángel Durán",
+    "url": "https://midu.dev"
   },
   "license": "Apache-2.0",
   "icon": "icon.png",
@@ -31,9 +32,15 @@
   ],
   "keywords": [
     "svg",
-    "preview svg",
-    "optimize svg",
-    "svgo"
+    "svg-preview",
+    "svg-editor",
+    "svg-optimization",
+    "svgo",
+    "vector-graphics",
+    "graphics",
+    "visualization",
+    "preview",
+    "optimize"
   ],
   "main": "./dist/extension.js",
   "contributes": {

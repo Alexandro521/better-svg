@@ -18,7 +18,7 @@
   "categories": [
     "Other"
   ],
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
   "activationEvents": [
     "onLanguage:xml"
   ],
@@ -87,12 +87,18 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./ && npm run copy-webview",
-    "watch": "tsc -watch -p ./ & npm run watch-webview",
-    "copy-webview": "mkdir -p out/webview && cp src/webview/*.html src/webview/*.css src/webview/*.js out/webview/",
-    "watch-webview": "node -e \"require('fs').watch('src/webview', () => require('child_process').exec('npm run copy-webview'))\"",
-    "pretest": "npm run compile && npm run lint",
+    "vscode:prepublish": "npm run package",
+    "compile": "npm run check-types && node esbuild.js && npm run copy-webview",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "watch:webview": "node -e \"require('fs').watch('src/webview', () => require('child_process').exec('npm run copy-webview'))\"",
+    "package": "npm run check-types && node esbuild.js --production && npm run copy-webview",
+    "check-types": "tsc --noEmit",
+    "copy-webview": "mkdir -p dist/webview && cp src/webview/*.html src/webview/*.css src/webview/*.js dist/webview/",
+    "compile-tests": "tsc -p . --outDir out",
+    "pretest": "npm run compile-tests && npm run lint",
+    "test": "vscode-test",
     "lint": "eslint src --ext ts"
   },
   "devDependencies": {
@@ -100,8 +106,10 @@
     "@types/vscode": "1.100.0",
     "@typescript-eslint/eslint-plugin": "8.46.1",
     "@typescript-eslint/parser": "8.46.1",
+    "esbuild": "0.25.11",
     "eslint": "9.38.0",
     "neostandard": "0.12.2",
+    "npm-run-all": "4.1.5",
     "typescript": "5.9.3"
   },
   "dependencies": {

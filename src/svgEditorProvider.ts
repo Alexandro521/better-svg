@@ -15,14 +15,12 @@
  */
 
 import * as vscode from 'vscode'
-import * as path from 'path'
 import * as fs from 'fs'
 
 export class SvgPreviewProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'betterSvg.preview'
   private _view?: vscode.WebviewView
   private _currentDocument?: vscode.TextDocument
-  private _isVisible: boolean = false
 
   constructor (private readonly context: vscode.ExtensionContext) {}
 
@@ -32,17 +30,11 @@ export class SvgPreviewProvider implements vscode.WebviewViewProvider {
     _token: vscode.CancellationToken
   ): void {
     this._view = webviewView
-    this._isVisible = webviewView.visible
 
     webviewView.webview.options = {
       enableScripts: true,
       localResourceRoots: [this.context.extensionUri]
     }
-
-    // Track visibility changes
-    webviewView.onDidChangeVisibility(() => {
-      this._isVisible = webviewView.visible
-    })
 
     // Initialize with current document if it's an SVG
     const editor = vscode.window.activeTextEditor
@@ -85,35 +77,68 @@ export class SvgPreviewProvider implements vscode.WebviewViewProvider {
   }
 
   private getHtmlForWebview (webview: vscode.Webview, document: vscode.TextDocument | null): string {
-    const svgContent = document ? document.getText() : '<svg></svg>'
-    const escapedSvg = this.escapeHtml(svgContent)
+    try {
+      const svgContent = document ? document.getText() : '<svg></svg>'
+      const escapedSvg = this.escapeHtml(svgContent)
 
-    // Get default color from configuration
-    const config = vscode.workspace.getConfiguration('betterSvg')
-    const defaultColor = config.get<string>('defaultColor', '#ffffff')
+      // Get default color from configuration
+      const config = vscode.workspace.getConfiguration('betterSvg')
+      const defaultColor = config.get<string>('defaultColor', '#ffffff')
 
-    // Get URIs for webview resources
-    const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'webview', 'main.js')
-    )
-    const stylesUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this.context.extensionUri, 'dist', 'webview', 'styles.css')
-    )
+      // Debug info
+      const extensionUri = this.context.extensionUri
+      if (!extensionUri) {
+        vscode.window.showErrorMessage('Better SVG: extensionUri is undefined!')
+        throw new Error('extensionUri is undefined')
+      }
 
-    // Read HTML template
-    const htmlPath = path.join(this.context.extensionPath, 'dist', 'webview', 'index.html')
-    let html = fs.readFileSync(htmlPath, 'utf8')
+      // Get URIs for webview resources
+      const scriptUri = webview.asWebviewUri(
+        vscode.Uri.joinPath(extensionUri, 'dist', 'webview', 'main.js')
+      )
+      const stylesUri = webview.asWebviewUri(
+        vscode.Uri.joinPath(extensionUri, 'dist', 'webview', 'styles.css')
+      )
 
-    // Replace placeholders
-    html = html
-      .replace(/{{cspSource}}/g, webview.cspSource)
-      .replace(/{{stylesUri}}/g, stylesUri.toString())
-      .replace(/{{scriptUri}}/g, scriptUri.toString())
-      .replace(/{{escapedSvg}}/g, escapedSvg)
-      .replace(/{{svgContent}}/g, svgContent)
-      .replace(/{{defaultColor}}/g, defaultColor)
+      // Read HTML template
+      const htmlUri = vscode.Uri.joinPath(extensionUri, 'dist', 'webview', 'index.html')
+      const htmlPath = htmlUri.fsPath
 
-    return html
+      if (!htmlPath) {
+        vscode.window.showErrorMessage(`Better SVG: htmlPath is undefined! URI: ${htmlUri.toString()}`)
+        throw new Error('htmlPath is undefined')
+      }
+
+      let html: string
+      try {
+        html = fs.readFileSync(htmlPath, 'utf8')
+      } catch (readError: any) {
+        vscode.window.showErrorMessage(
+          'Better SVG: Failed to read HTML file!\n' +
+          `Path: ${htmlPath}\n` +
+          `Error: ${readError.message}`
+        )
+        throw readError
+      }
+
+      // Replace placeholders
+      html = html
+        .replace(/{{cspSource}}/g, webview.cspSource)
+        .replace(/{{stylesUri}}/g, stylesUri.toString())
+        .replace(/{{scriptUri}}/g, scriptUri.toString())
+        .replace(/{{escapedSvg}}/g, escapedSvg)
+        .replace(/{{svgContent}}/g, svgContent)
+        .replace(/{{defaultColor}}/g, defaultColor)
+
+      return html
+    } catch (error: any) {
+      vscode.window.showErrorMessage(
+        'Better SVG: Error in getHtmlForWebview!\n' +
+        `Message: ${error.message}\n` +
+        `Stack: ${error.stack?.substring(0, 200)}`
+      )
+      throw error
+    }
   }
 
   private updateTextDocument (document: vscode.TextDocument, content: string) {

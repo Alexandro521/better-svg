@@ -35,6 +35,11 @@ body {
   color: var(--vscode-editor-foreground);
 }
 
+button {
+  border: 0;
+  background: none;
+}
+
 .preview-wrapper {
   height: 100%;
   width: 100%;
@@ -107,6 +112,68 @@ body {
 }
 
 .toggle-dark-bg-wrapper:hover .toggle-dark-bg {
+  opacity: 1;
+}
+
+.center-icon-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  padding: 4px;
+  margin: -4px;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--vscode-foreground) 10%, transparent);
+  }
+
+  &:active {
+    background-color: color-mix(in srgb, var(--vscode-foreground) 15%, transparent);
+  }
+}
+
+.center-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--vscode-foreground);
+  opacity: 0.8;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.center-icon-wrapper:hover .center-icon {
+  opacity: 1;
+}
+
+.optimize-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  padding: 4px;
+  margin: -4px;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--vscode-foreground) 10%, transparent);
+  }
+
+  &:active {
+    background-color: color-mix(in srgb, var(--vscode-foreground) 15%, transparent);
+  }
+}
+
+.optimize-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--vscode-foreground);
+  opacity: 0.8;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.optimize-wrapper:hover .optimize-icon {
   opacity: 1;
 }
 

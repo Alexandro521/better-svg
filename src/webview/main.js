@@ -46,12 +46,28 @@ const vscode = acquireVsCodeApi()
   colorSwatch.style.backgroundColor = currentColor
   svgWrapper.style.color = currentColor
 
+  // Ensure SVG has a width if it's missing both width and height
+  const ensureSvgWidth = () => {
+    const wrapper = $('#svgWrapper')
+    if (wrapper) {
+      const svg = wrapper.querySelector('svg')
+      if (svg && !svg.hasAttribute('width') && !svg.hasAttribute('height')) {
+        const previewWidth = preview.clientWidth
+        svg.setAttribute('width', Math.floor(previewWidth * 0.7) + 'px')
+      }
+    }
+  }
+
+  // Ensure initial SVG has width if needed
+  setTimeout(() => ensureSvgWidth(), 0)
+
   // Update preview with currentColor
   const updatePreviewWithColor = (content) => {
     const wrapper = $('#svgWrapper')
     if (wrapper) {
       wrapper.innerHTML = content
       wrapper.style.color = currentColor
+      ensureSvgWidth()
       updateTransform()
     }
   }

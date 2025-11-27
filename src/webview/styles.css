@@ -224,7 +224,6 @@ input[type="color"] {
 
 .preview-content {
   flex: 1;
-  min-height: 200px;
   padding: 16px;
   background-color: var(--vscode-editorWidget-background);
   background: repeating-conic-gradient(

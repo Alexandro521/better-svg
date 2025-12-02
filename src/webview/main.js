@@ -28,6 +28,7 @@ const vscode = acquireVsCodeApi()
   const centerIconWrapper = $('#centerIconWrapper')
   const optimizeWrapper = $('#optimizeWrapper')
   const zoomLevel = $('#zoomLevel')
+  const svgSize = $('#svgSize')
 
   // Get default color from the color picker value (set by template)
   let currentColor = colorPicker.value
@@ -82,6 +83,15 @@ const vscode = acquireVsCodeApi()
     translateX = 0
     translateY = 0
     updateTransform()
+  }
+
+  const updateSvgFileSize = () => {
+    const wrapper = $('#svgWrapper')
+    if (wrapper) {
+      const byteSize = wrapper.getHTML().length
+      const size = (byteSize / 1024).toFixed(1)
+      svgSize.textContent = `(${size} KB)`
+    }
   }
 
   colorPickerWrapper.addEventListener('click', () => {
@@ -214,9 +224,11 @@ const vscode = acquireVsCodeApi()
   window.addEventListener('message', event => {
     const message = event.data
     if (message.type === 'update') {
+      updateSvgFileSize()
       updatePreviewWithColor(message.content)
       resetZoom()
     } else if (message.type === 'clear') {
+      updateSvgFileSize()
       svgWrapper.innerHTML = ''
       resetZoom()
     }

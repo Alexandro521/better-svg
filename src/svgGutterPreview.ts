@@ -35,6 +35,11 @@ export class SvgGutterPreview {
       
       svgContent = svgContent.replace(/currentColor/g, contrastColor)
 
+      // Add xmlns if missing
+      if (!svgContent.includes('xmlns=')) {
+        svgContent = svgContent.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"')
+      }
+
       // Encode SVG content for data URI
       const encodedSvg = encodeURIComponent(svgContent)
         .replace(/'/g, '%27')

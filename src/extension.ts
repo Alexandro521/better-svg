@@ -20,6 +20,7 @@ import { SvgGutterPreview, SvgHoverProvider } from './svgGutterPreview'
 import { optimize } from 'svgo/browser'
 import { prepareForOptimization, finalizeAfterOptimization } from './svgTransform'
 import { SUPPORTED_LANGUAGES } from './consts'
+import { exportToImage } from './exportToImage'
 
 let previewProvider: SvgPreviewProvider
 let gutterPreview: SvgGutterPreview
@@ -52,8 +53,6 @@ export function activate (context: vscode.ExtensionContext) {
 
     // Register SVG Hover Provider for all supported languages
     const svgHoverProvider = new SvgHoverProvider()
-    
-
     context.subscriptions.push(
       vscode.languages.registerHoverProvider(
         SUPPORTED_LANGUAGES.map(lang => ({ language: lang })),
@@ -256,6 +255,12 @@ export function activate (context: vscode.ExtensionContext) {
           }
         }
       )
+    )
+    // Register command to export SVG to image
+    context.subscriptions.push(
+      vscode.commands.registerCommand('betterSvg.exportToImage', async (svgContent: string) => {
+        await exportToImage(context, svgContent)
+      })
     )
   } catch (error: any) {
     vscode.window.showErrorMessage(

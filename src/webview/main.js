@@ -131,6 +131,7 @@ const vscode = acquireVsCodeApi()
   exportToImageBtn.addEventListener('click', () => {
     vscode.postMessage({
       type: 'exportToImage',
+      data: preview.getHTML()
     })
   })
 

@@ -18,6 +18,7 @@ import * as vscode from 'vscode'
 import { SvgPreviewProvider } from './svgEditorProvider'
 import { SvgGutterPreview } from './svgGutterPreview'
 import { optimize } from 'svgo/browser'
+import { getHtmlForExportToImage } from './exportToImage'
 
 let previewProvider: SvgPreviewProvider
 let gutterPreview: SvgGutterPreview
@@ -205,6 +206,18 @@ export function activate (context: vscode.ExtensionContext) {
         }
 
         await optimizeSvgDocument(document)
+      })
+    )
+    context.subscriptions.push(
+      vscode.commands.registerCommand('betterSvg.exportToImage', async (svgContent: string) => {
+        const panel = vscode.window.createWebviewPanel(
+          'betterSvg.exportToImage',
+          'Export to Image',
+          vscode.ViewColumn.One,
+          { enableScripts: true }
+        )
+        panel.webview.html = getHtmlForExportToImage(panel.webview, context.extensionUri, svgContent)
+        panel.iconPath = vscode.Uri.joinPath(context.extensionUri, 'static', 'better-svg.webp')
       })
     )
   } catch (error: any) {

@@ -29,6 +29,7 @@ const vscode = acquireVsCodeApi()
   const optimizeWrapper = $('#optimizeWrapper')
   const zoomLevel = $('#zoomLevel')
   const svgSize = $('#svgSize')
+  const exportToImageBtn = $('#exportToImageBtn')
 
   // Get default color from the color picker value (set by template)
   let currentColor = colorPicker.value
@@ -125,6 +126,12 @@ const vscode = acquireVsCodeApi()
       toggleDarkBg.setAttribute('stroke-linecap', 'round')
       toggleDarkBg.setAttribute('stroke-linejoin', 'round')
     }
+  })
+  // Export to image functionality
+  exportToImageBtn.addEventListener('click', () => {
+    vscode.postMessage({
+      type: 'exportToImage',
+    })
   })
 
   // Center icon functionality

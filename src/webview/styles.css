@@ -267,3 +267,34 @@ input[type="color"] {
   max-height: none;
   display: block;
 }
+
+.export-to-image-btn {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  padding: 4px;
+  margin: -4px;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--vscode-foreground) 10%, transparent);
+  }
+
+  &:active {
+    background-color: color-mix(in srgb, var(--vscode-foreground) 15%, transparent);
+  }
+}
+
+.export-to-image-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--vscode-foreground);
+  opacity: 0.8;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.export-to-image-btn:hover .export-to-image-icon {
+  opacity: 1;
+}

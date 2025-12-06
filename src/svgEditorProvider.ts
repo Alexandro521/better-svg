@@ -59,6 +59,11 @@ export class SvgPreviewProvider implements vscode.WebviewViewProvider {
             optimizeSvgDocument(this._currentDocument)
           }
           break
+        case 'exportToImage':
+          if (this._currentDocument) {
+            vscode.commands.executeCommand('betterSvg.exportToImage', e.data)
+          }
+          break
       }
     })
   }

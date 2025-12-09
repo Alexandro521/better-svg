@@ -329,4 +329,24 @@ describe('edge cases', () => {
     assert.ok(result.includes("stroke-linecap='round'"))
     assert.ok(result.includes('stroke-width="2"'))
   })
+
+  it('should handle nested brackets in expressions (e.g. onClick handlers)', () => {
+    const input = '<svg onClick={() => { console.log("click") }} strokeWidth={2}></svg>'
+    const result = convertJsxToSvg(input)
+    
+    // Check that we got a valid attribute format
+    // The inner quotes should be escaped as &quot;
+    assert.ok(result.includes('onClick="() => { console.log(&quot;click&quot;) }"'))
+    assert.ok(result.includes('stroke-width="2"'))
+    
+    // Check that we can round-trip it back
+    // Simulate what SVGO might do (escape >)
+    const resultWithEscapedArrow = result.replace('=>', '=&gt;')
+    
+    const backToJsx = convertSvgToJsx(resultWithEscapedArrow)
+    // Note: spaces might differ, so we check for containment or normalized string
+    // Our logic restores onClick={...} and unescapes quotes and HTML entities.
+    assert.ok(backToJsx.includes('onClick={() => { console.log("click") }}'))
+    assert.ok(backToJsx.includes('strokeWidth=')) 
+  })
 })

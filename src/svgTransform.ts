@@ -103,10 +103,84 @@ export function isJsxSvg (svgContent: string): boolean {
  * - Converts className to class
  * - Converts camelCase attributes to kebab-case
  */
+/**
+ * Helper to replace JSX expressions like ={...} with ="..."
+ * Handles nested braces and strings correctly
+ */
+function replaceJsxExpressions (content: string): string {
+  let result = ''
+  let currentIndex = 0
+
+  while (currentIndex < content.length) {
+    const startIdx = content.indexOf('={', currentIndex)
+    if (startIdx === -1) {
+      result += content.slice(currentIndex)
+      break
+    }
+
+    // Append everything before "={"
+    result += content.slice(currentIndex, startIdx)
+
+    // Find matching brace
+    let balance = 1
+    let j = startIdx + 2
+    let found = false
+    let inString = false
+    let stringChar = ''
+
+    while (j < content.length) {
+      const char = content[j]
+      const prevChar = content[j - 1]
+
+      if (inString) {
+        if (char === stringChar && prevChar !== '\\') {
+          inString = false
+        }
+      } else {
+        if (char === '"' || char === '\'' || char === '`') {
+          inString = true
+          stringChar = char
+        } else if (char === '{') {
+          balance++
+        } else if (char === '}') {
+          balance--
+        }
+      }
+
+      j++
+
+      if (!inString && balance === 0) {
+        found = true
+        break
+      }
+    }
+
+    if (found) {
+      const expression = content.slice(startIdx + 2, j - 1)
+      // Escape double quotes inside the attribute value
+      const escapedExpression = expression.replace(/"/g, '&quot;')
+      result += `="${escapedExpression}"`
+      currentIndex = j
+    } else {
+      // Failed to find matching brace, just skip "={"
+      result += '={'
+      currentIndex = startIdx + 2
+    }
+  }
+
+  return result
+}
+
+/**
+ * Converts JSX SVG syntax to valid SVG XML
+ * - Converts expression values {2} to "2"
+ * - Converts className to class
+ * - Converts camelCase attributes to kebab-case
+ */
 export function convertJsxToSvg (svgContent: string): string {
   // Convert JSX expression values like {2} to "2"
-  // Handle both simple values and expressions
-  svgContent = svgContent.replace(/=\{([^}]+)\}/g, '="$1"')
+  // Handle both simple values and expressions using the robust parser
+  svgContent = replaceJsxExpressions(svgContent)
 
   // Convert className to class
   svgContent = svgContent.replace(/\bclassName=/g, 'class=')
@@ -136,6 +210,21 @@ export function convertSvgToJsx (svgContent: string): string {
     const regex = new RegExp(`\\b${escapedSvg}=`, 'g')
     svgContent = svgContent.replace(regex, `${jsx}=`)
   }
+
+  // Restore event handlers to expressions (simple heuristic for on* handlers)
+  // This handles attributes like onClick="() => ..." converting them back to onClick={() => ...}
+  svgContent = svgContent.replace(/\b(on[A-Z]\w*)="([^"]*)"/g, (match, attr, value) => {
+    // Unescape &quot; back to " and other html entities
+    const unescaped = value
+      .replace(/&quot;/g, '"')
+      .replace(/&gt;/g, '>')
+      .replace(/&lt;/g, '<')
+      .replace(/&amp;/g, '&')
+    return `${attr}={${unescaped}}`
+  })
+
+  // Also handle single occurrences of restored logic for generic expressions if valid?
+  // For now, restricting to event handlers is safer to avoid converting string props to invalid code.
 
   return svgContent
 }

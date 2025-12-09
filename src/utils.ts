@@ -18,9 +18,7 @@
  * Formats bytes into a readable string (bytes or KB)
  */
 export function formatBytes (bytes: number): string {
-  if (bytes < 1024) {
-    return `${bytes} bytes`
-  }
+  if (bytes < 1024) return `${bytes} bytes`
   return `${(bytes / 1024).toFixed(2)} KB`
 }
 

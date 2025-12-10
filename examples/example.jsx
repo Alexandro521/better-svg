@@ -25,7 +25,7 @@ export const ComplicatedComponent = () => {
   )
 }
 
-export const ConditionalComponent = () => {
+export const ConditionalComponent = (props) => {
   return (
     <div
       className={cn(

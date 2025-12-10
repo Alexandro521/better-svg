@@ -278,7 +278,6 @@ function getSvgoPlugins (removeClasses: boolean): any[] {
       name: 'preset-default',
       params: {
         overrides: {
-          removeViewBox: false,
           // Preserve important attributes by default
           cleanupIds: false,
           // Disable removing unknown attributes (like onClick, data-*) when preserving classes (inline mode)

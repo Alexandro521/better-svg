@@ -7,27 +7,29 @@ const $ = document.querySelector.bind(document)
 /**
  * @type {HTMLDivElement}
  */
-
 const exportFormats = $('#format-export')
 const resolutionOptions = $('#resolutions')
 const fitOptions = $('#image-fit')
-
 const svgContainer = $('#previewSvg')
 const outpath = $('#outpath')
-const inputs = document.querySelectorAll('input[type=number]')
 /**
  * @type {HTMLInputElement}
- */
+*/
 const pixelDensity = $('#pixel-density')
 const qualityPercent = $('#quality-percent')
 const imgHeight = $('#img-height')
 const imgWidth = $('#img-width')
-const exportBtn = $('#btn-set-dir')
+const setDirBtn = $('#btn-set-dir')
+const inputs = document.querySelectorAll('input[type=number]')
+/**
+ * @type {HTMLButtonElement}
+ */
+const exportBtn = $('#export-btn')
+const disposeBtn = $('#dispose-btn')
 
 injectSelectComponent(exportFormats, sendState)
 injectSelectComponent(fitOptions, sendState)
-
-injectSelectComponent(resolutionOptions, (option, value) => {
+injectSelectComponent(resolutionOptions, (_, value) => {
   if (value === 'custom') {
     imgHeight.parentElement.classList.remove('no-user-input')
   } else {
@@ -43,12 +45,34 @@ inputs.forEach(input => {
   input.addEventListener('change', sendState)
 })
 
-exportBtn.addEventListener('click', (e) => {
+setDirBtn.addEventListener('click', (e) => {
   vscode.postMessage({
     type: 'openFileDialog',
   })
 })
 
+disposeBtn.addEventListener('click', (e) => {
+  vscode.postMessage({
+    type: 'dispose',
+  })
+})
+exportBtn.addEventListener('click', (e) => {
+  vscode.postMessage({
+    type: 'export',
+    data: {
+      svgContent: svgContainer.getHTML(),
+      pixelDensity: pixelDensity.value ?? 300,
+      qualityPercent: qualityPercent.value ?? 80,
+      path: outpath.getAttribute('value') ?? './',
+      format: exportFormats.querySelector('.current-value').getAttribute('value') ?? 'webp',
+      fit: fitOptions.querySelector('.current-value').getAttribute('value') ?? 'cover',
+      resolution: {
+        imgHeight: imgHeight.value ?? 640,
+        imgWidth: imgWidth.value ?? 480,
+      },
+    }
+  })
+})
 function saveCurrentState () {
   const state = [
     {

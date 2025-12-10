@@ -29,7 +29,7 @@ const vscode = acquireVsCodeApi()
   const optimizeWrapper = $('#optimizeWrapper')
   const zoomLevel = $('#zoomLevel')
   const svgSize = $('#svgSize')
-
+  const exportToImageBtn = $('#exportToImageBtn')
   // Get default color from the color picker value (set by template)
   let currentColor = colorPicker.value
   let isDarkBackground = false
@@ -173,6 +173,13 @@ const vscode = acquireVsCodeApi()
       preview.classList.add('grabbing')
       e.preventDefault()
     }
+  })
+  // Export to image functionality
+  exportToImageBtn.addEventListener('click', () => {
+    vscode.postMessage({
+      type: 'exportToImage',
+      data: preview.getHTML()
+    })
   })
 
   window.addEventListener('mousemove', (e) => {

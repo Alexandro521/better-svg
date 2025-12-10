@@ -20,7 +20,7 @@ import { SvgGutterPreview, SvgHoverProvider } from './svgGutterPreview'
 import { optimize } from 'svgo/browser'
 import { prepareForOptimization, finalizeAfterOptimization } from './svgTransform'
 import { SUPPORTED_LANGUAGES } from './consts'
-import { exportToImage } from './exportToImage'
+import { exportToImage } from './svgExportToImage'
 
 let previewProvider: SvgPreviewProvider
 let gutterPreview: SvgGutterPreview

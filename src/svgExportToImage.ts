@@ -119,8 +119,8 @@ export function getWebViewHtml (
 }
 
 class PanelManager {
-  static currentPanel: vscode.WebviewPanel | undefined
-  static currentState: string | undefined
+  private static currentPanel: vscode.WebviewPanel | undefined
+  private static currentState: string | undefined
 
   static getCurrentPanel (): vscode.WebviewPanel | undefined {
     return PanelManager.currentPanel
@@ -168,6 +168,9 @@ class PanelManager {
           type: 'fileSystem',
           dir: uri[0]
         })
+        break
+      case 'dispose':
+        PanelManager.currentPanel?.dispose()
         break
     }
   }

@@ -256,19 +256,19 @@
         cursor: pointer;
     }
 
-    .actions button.export {
+    .actions button.export-btn {
         background-color: rgb(77, 108, 148);
     }
 
-    .actions button.cancel {
+    .actions button.dispose-btn {
         background-color: #1817173b;
     }
 
-    .actions button.export:hover {
+    .actions button.export-btn:hover {
         background-color: rgb(85, 119, 165);
     }
 
-    .actions button.cancel:hover {
+    .actions button.dispose-btn:hover {
         background-color: #25242452;
     }
     .preview-content{

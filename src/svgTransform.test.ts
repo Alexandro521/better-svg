@@ -349,4 +349,15 @@ describe('edge cases', () => {
     assert.ok(backToJsx.includes('onClick={() => { console.log("click") }}'))
     assert.ok(backToJsx.includes('strokeWidth=')) 
   })
+
+  it('should handle SVG with inner element having xmlns attribute', () => {
+    const input = `<svg width='2em' height='2em' viewBox='0 0 24 24'>
+      <title xmlns=''>check-box-solid</title>
+      <path fill='currentColor' d='M22 2V1H2v1H1v20h1v1h20v-1h1V2z' />
+    </svg>`
+    
+    // Just ensure it doesn't crash and preserves content
+    const result = convertJsxToSvg(input)
+    assert.ok(result.includes('<title xmlns=\'\'>check-box-solid</title>'))
+  })
 })

@@ -72,7 +72,11 @@ export class SvgHoverProvider implements vscode.HoverProvider {
         svgContent = convertJsxToSvg(svgContent)
 
         // Add xmlns if missing (do this early so SVG is valid)
-        if (!svgContent.includes('xmlns=')) {
+        // Check ONLY inside the opening <svg ... > tag
+        const svgOpenTagMatch = svgContent.match(/<svg[^>]*>/i)
+        const hasXmlnsInRoot = svgOpenTagMatch && /xmlns\s*=\s*["']/.test(svgOpenTagMatch[0])
+        
+        if (!hasXmlnsInRoot) {
           svgContent = svgContent.replace(/<svg/, '<svg xmlns="http://www.w3.org/2000/svg"')
         }
 
@@ -273,7 +277,11 @@ export class SvgGutterPreview {
       svgContent = convertJsxToSvg(svgContent)
 
       // Add xmlns if missing (do this early so SVG is valid)
-      if (!svgContent.includes('xmlns=')) {
+      // Check ONLY inside the opening <svg ... > tag
+      const svgOpenTagMatch = svgContent.match(/<svg[^>]*>/i)
+      const hasXmlnsInRoot = svgOpenTagMatch && /xmlns\s*=\s*["']/.test(svgOpenTagMatch[0])
+      
+      if (!hasXmlnsInRoot) {
         svgContent = svgContent.replace(/<svg/, '<svg xmlns="http://www.w3.org/2000/svg"')
       }
 

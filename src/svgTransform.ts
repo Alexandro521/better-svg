@@ -81,6 +81,11 @@ export function isJsxSvg (svgContent: string): boolean {
     return true
   }
 
+  // Check for spread attributes like {...props}
+  if (/\{\.\.\.[^}]+\}/.test(svgContent)) {
+    return true
+  }
+
   // Check for className attribute
   if (/\bclassName=/.test(svgContent)) {
     return true
@@ -157,8 +162,12 @@ function replaceJsxExpressions (content: string): string {
 
     if (found) {
       const expression = content.slice(startIdx + 2, j - 1)
-      // Escape double quotes inside the attribute value
-      const escapedExpression = expression.replace(/"/g, '&quot;')
+      // Escape special XML characters inside the attribute value
+      const escapedExpression = expression
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
       result += `="${escapedExpression}"`
       currentIndex = j
     } else {
@@ -182,6 +191,14 @@ export function convertJsxToSvg (svgContent: string): string {
   // Handle both simple values and expressions using the robust parser
   svgContent = replaceJsxExpressions(svgContent)
 
+  // Convert spread attributes {...props} to data-spread-i="props"
+  let spreadIndex = 0
+  svgContent = svgContent.replace(/\{\.\.\.([^}]+)\}/g, (_match, expression) => {
+    // Escape double quotes inside the attribute value
+    const escapedExpression = expression.replace(/"/g, '&quot;')
+    return `data-spread-${spreadIndex++}="${escapedExpression}"`
+  })
+
   // Convert className to class
   svgContent = svgContent.replace(/\bclassName=/g, 'class=')
 
@@ -190,6 +207,10 @@ export function convertJsxToSvg (svgContent: string): string {
     const regex = new RegExp(`\\b${jsx}=`, 'g')
     svgContent = svgContent.replace(regex, `${svg}=`)
   }
+
+  // Rename event handlers to avoid security blocking in previews
+  // data-jsx-event-onClick="..."
+  svgContent = svgContent.replace(/\b(on[A-Z]\w*)=/g, 'data-jsx-event-$1=')
 
   return svgContent
 }
@@ -211,10 +232,22 @@ export function convertSvgToJsx (svgContent: string): string {
     svgContent = svgContent.replace(regex, `${jsx}=`)
   }
 
-  // Restore event handlers to expressions (simple heuristic for on* handlers)
-  // This handles attributes like onClick="() => ..." converting them back to onClick={() => ...}
-  svgContent = svgContent.replace(/\b(on[A-Z]\w*)="([^"]*)"/g, (match, attr, value) => {
+  // Convert data-spread-i="props" back to {...props}
+  svgContent = svgContent.replace(/\bdata-spread-\d+="([^"]*)"/g, (_match, value) => {
     // Unescape &quot; back to " and other html entities
+    const unescaped = value
+      .replace(/&quot;/g, '"')
+      .replace(/&gt;/g, '>')
+      .replace(/&lt;/g, '<')
+      .replace(/&amp;/g, '&')
+    return `{...${unescaped}}`
+  })
+
+  // Restore event handlers to expressions
+  // Matches data-jsx-event-onClick="..." and converts back to onClick={() => ...}
+  svgContent = svgContent.replace(/\bdata-jsx-event-(on[A-Z]\w*)="([^"]*)"/g, (match, attr, value) => {
+    // Unescape &quot; back to " and other html entities
+    // Note: the value was escaped in replaceJsxExpressions or originally in the attribute
     const unescaped = value
       .replace(/&quot;/g, '"')
       .replace(/&gt;/g, '>')

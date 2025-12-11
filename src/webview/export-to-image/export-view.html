@@ -40,16 +40,16 @@ limitations under the License.
             <div class="boxing">
                 <div class="head" title="razterizer quality per pixel">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-grid-dots"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M19 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M5 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M19 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
-                    <span class="title">Pixel density</span>
+                    <span class="title" title="number representing the DPI for vector images in the range 1 to 100000.">Pixel density</span>
                 </div>
-                <input id="pixel-density" class="pixel-density" value="300" type="number" min="1" max='1000'>
+                <input id="pixel-density" class="pixel-density" value="300" type="number" min="1" max='10000'>
 
             </div>
 
             <div class="boxing">
                 <div class="head" title="compression image level more quality -> more size">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-aspect-ratio"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 5m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M7 12v-3h3" /><path d="M17 12v3h-3" /></svg>
-                    <span class="title">Quality</span>
+                    <span class="title" title="Compression image level more quality -> more size">Quality</span>
                 </div>
                 <input id="quality-percent" class="quality-percent" value="80" type="number" min="10" max='100'>
 
@@ -94,7 +94,7 @@ limitations under the License.
             <div class="boxing">
                 <div class="head">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-aspect-ratio"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 5m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M7 12v-3h3" /><path d="M17 12v3h-3" /></svg>
-                    <span class="title">FIt</span>
+                    <span class="title">reszise</span>
                 </div>
                     <div name="export" id="image-fit" class="select" title="format to export">
                         <span class="current-value" value="cover">
@@ -114,9 +114,11 @@ limitations under the License.
                                 d="M18 9c.852 0 1.297 .986 .783 1.623l-.076 .084l-6 6a1 1 0 0 1 -1.32 .083l-.094 -.083l-6 -6l-.083 -.094l-.054 -.077l-.054 -.096l-.017 -.036l-.027 -.067l-.032 -.108l-.01 -.053l-.01 -.06l-.004 -.057v-.118l.005 -.058l.009 -.06l.01 -.052l.032 -.108l.027 -.067l.07 -.132l.065 -.09l.073 -.081l.094 -.083l.077 -.054l.096 -.054l.036 -.017l.067 -.027l.108 -.032l.053 -.01l.06 -.01l.057 -.004l12.059 -.002z" />
                         </svg>
                         <div class="options hidden">
-                            <span value="webp" class="option" id="wepb-f">Content</span>
-                            <span value="jpg" class="option" id="jpg-f">Cover</span>
-                            <span value="png" class="option" id="png-f">Contain</span>
+                            <span value="cover" class="option" id="cover-option" title="(default) Preserving aspect ratio, attempt to ensure the image covers both provided dimensions by cropping/clipping to fit.">cover</span>
+                            <span value="contain" class="option" id="contain-option" title="Preserving aspect ratio, contain within both provided dimensions using “letterboxing” where necessary.">contain</span>
+                            <span value="fill" class="option" id="fill-option" title="Ignore the aspect ratio of the input and stretch to both provided dimensions.">fill</span>
+                            <span value="inside" class="option" id="inside-option" title="Preserving aspect ratio, resize the image to be as large as possible while ensuring its dimensions are less than or equal to both those specified.">inside</span>
+                            <span value="outside" class="option" id="outside-option" title="Preserving aspect ratio, resize the image to be as small as possible while ensuring its dimensions are greater than or equal to both those specified.">outside</span>
                         </div>
                     </div>
                 
@@ -171,7 +173,7 @@ limitations under the License.
 
         <div class="outpath">
 
-            <span id="outpath" value=".">
+            <span id="outpath" value="./">
                 /
             </span>
 

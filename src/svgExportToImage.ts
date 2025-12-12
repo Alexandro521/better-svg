@@ -256,7 +256,6 @@ export async function exportToImage (context: vscode.ExtensionContext, svgConten
       { enableScripts: true }
     )
     currentPanel.webview.html = getWebViewHtml(currentPanel.webview, context.extensionUri, svgContent)
-    // Set icon
     currentPanel.iconPath = vscode.Uri.joinPath(context.extensionUri, 'static', 'better-svg.webp')
     PanelManager.setCurrentPnael(currentPanel)
     currentPanel.onDidChangeViewState(PanelManager.onDidChangeViewState, null, context.subscriptions)
@@ -279,7 +278,7 @@ function parseExportData (exportData: string) {
 
   fit = fitOptions.some(e => e === fit) ? fit : 'cover'
   format = formatOptions.some(e => e === format) ? format : 'webp'
-  qualityPercent = clamp(0, 100, qualityPercent)
+  qualityPercent = clamp(1, 100, qualityPercent)
   pixelDensity = clamp(1, 10000, pixelDensity)
   resolution.imgHeight = clamp(16, 8192, resolution.imgHeight)
   resolution.imgWidth = clamp(16, 8192, resolution.imgWidth)

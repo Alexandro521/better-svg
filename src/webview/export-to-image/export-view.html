@@ -83,7 +83,7 @@ limitations under the License.
                         </svg>
                         <div class="options hidden">
                             <span value="webp" class="option" id="wepb-f">webp</span>
-                            <span value="jpg" class="option" id="jpg-f">jpg</span>
+                            <span value="jpeg" class="option" id="jpg-f">jpg</span>
                             <span value="png" class="option" id="png-f">png</span>
                             <span value="raw" class="option" id="raw-f">raw</span>
                         </div>
@@ -130,7 +130,7 @@ limitations under the License.
             <span class="title">Resolution</span>
         </div>
         <div class="resolution-box" id="res-box">
-            <div name="export" id="resolutions" class="select" title="format to export">
+            <div name="resolution options" id="resolutions" class="select" title="format to export">
                 <span class="current-value" value="640,480" id="res-value">
                     480p
                 </span>
@@ -148,17 +148,41 @@ limitations under the License.
                 </svg>
                 <div class="options hidden resolution-image">
                     <span value="custom" class="option">custom</span>
-                    <span value="640,480" class="option">480p</span>
-                    <span value="1280,720" class="option">720p</span>
-                    <span value="1366,768" class="option">HD</span>
-                    <span value="1600,900" class="option">HD+</span>
-                    <span value="1920,1080" class="option">1080p</span>
-                    <span value="2560,1440" class="option">1440p</span>
-                    <span value="3840,2160" class="option">4K</span>
-                    <span value="5120,2880" class="option">5K</span>
-                    <span value="7680,4320" class="option">8K</span>
-                </div>
-            </div>
+                    <span value="16,16" class="option">16×16 (favicon)</span>
+                    <span value="32,32" class="option">32×32 (favicon / icon)</span>
+                    <span value="48,48" class="option">48×48 (small icon)</span>
+                    <span value="64,64" class="option">64×64 (app icon)</span>
+                    <span value="128,128" class="option">128×128 (icon)</span>
+                    <span value="256,256" class="option">256×256 (icon / app)</span>
+                    <span value="512,512" class="option">512×512 (store icon / high-res)</span>
+                    
+                    <span value="320,240" class="option">320×240 (QVGA)</span>
+                    <span value="640,480" class="option">640×480 (VGA / 480p 4:3)</span>
+                    <span value="854,480" class="option">854×480 (480p widescreen)</span>
+                    <span value="1280,720" class="option">1280×720 (720p / HD)</span>
+                    <span value="1366,768" class="option">1366×768 (common laptop)</span>
+                    <span value="1440,900" class="option">1440×900 (laptop)</span>
+                    <span value="1536,864" class="option">1536×864 (laptop)</span>
+                    <span value="1920,1080" class="option">1920×1080 (1080p / Full HD)</span>
+                    <span value="2560,1440" class="option">2560×1440 (1440p / QHD / 2K)</span>
+                    <span value="3840,2160" class="option">3840×2160 (2160p / 4K UHD)</span>
+                    <span value="5120,2880" class="option">5120×2880 (5K)</span>
+                    
+                    <span value="320,568" class="option">320×568 (small mobile)</span>
+                    <span value="360,640" class="option">360×640 (common Android mobile)</span>
+                    <span value="375,667" class="option">375×667 (iPhone 8)</span>
+                    <span value="390,844" class="option">390×844 (iPhone 12/13/14 pro)</span>
+                    <span value="720,1280" class="option">720×1280 (mobile portrait)</span>
+                    
+                    <span value="768,1024" class="option">768×1024 (iPad portrait)</span>
+                    <span value="800,1280" class="option">800×1280 (tablet)</span>
+                    
+                    <span value="1080,1080" class="option">1080×1080 (Instagram square)</span>
+                    <span value="1080,1920" class="option">1080×1920 (Instagram / Stories / Portrait)</span>
+                    <span value="1200,630" class="option">1200×630 (Open Graph / link preview)</span>
+                    <span value="820,312" class="option">820×312 (Facebook cover / header small)</span>
+                    </div>
+                    </div>
 
             <div class="res-box resolution-container no-user-input">
                 <input id="img-height" value="640" type="number" min="16" max="10000">

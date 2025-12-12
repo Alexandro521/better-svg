@@ -57,20 +57,25 @@ disposeBtn.addEventListener('click', (e) => {
   })
 })
 exportBtn.addEventListener('click', (e) => {
+  const exportData = {
+    svgContent: svgContainer.querySelector('svg').outerHTML,
+    pixelDensity: Number(pixelDensity.value) ?? 300,
+    qualityPercent: Number(qualityPercent.value) ?? 80,
+    output: {
+      fileName: 'untitled',
+      path: outpath.getAttribute('value') ?? './',
+      override: true,
+    },
+    format: exportFormats.querySelector('.current-value').getAttribute('value') ?? 'webp',
+    fit: fitOptions.querySelector('.current-value').getAttribute('value') ?? 'cover',
+    resolution: {
+      imgHeight: Number(imgHeight.value) ?? 640,
+      imgWidth: Number(imgWidth.value) ?? 480,
+    },
+  }
   vscode.postMessage({
     type: 'export',
-    data: {
-      svgContent: svgContainer.getHTML(),
-      pixelDensity: pixelDensity.value ?? 300,
-      qualityPercent: qualityPercent.value ?? 80,
-      path: outpath.getAttribute('value') ?? './',
-      format: exportFormats.querySelector('.current-value').getAttribute('value') ?? 'webp',
-      fit: fitOptions.querySelector('.current-value').getAttribute('value') ?? 'cover',
-      resolution: {
-        imgHeight: imgHeight.value ?? 640,
-        imgWidth: imgWidth.value ?? 480,
-      },
-    }
+    data: JSON.stringify(exportData)
   })
 })
 function saveCurrentState () {

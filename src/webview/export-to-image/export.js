@@ -20,7 +20,8 @@ const qualityPercent = $('#quality-percent')
 const imgHeight = $('#img-height')
 const imgWidth = $('#img-width')
 const setDirBtn = $('#btn-set-dir')
-const inputs = document.querySelectorAll('input[type=number]')
+const fileName = $('#filename')
+const inputs = document.querySelectorAll('input')
 /**
  * @type {HTMLButtonElement}
  */
@@ -62,7 +63,7 @@ exportBtn.addEventListener('click', (e) => {
     pixelDensity: Number(pixelDensity.value) ?? 300,
     qualityPercent: Number(qualityPercent.value) ?? 80,
     output: {
-      fileName: 'untitled',
+      fileName: fileName.value,
       path: outpath.getAttribute('value') ?? './',
       override: true,
     },
@@ -123,6 +124,11 @@ function saveCurrentState () {
       type: 'input',
       elementId: imgWidth.id,
       state: imgWidth.value
+    },
+    {
+      type: 'input',
+      elementId: fileName.id,
+      state: fileName.value
     },
     {
       type: 'generic',

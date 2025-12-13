@@ -219,7 +219,7 @@ class PanelManager {
         try {
           const exportData = parseExportData(message.data)
           await SvgToImage(exportData)
-          vscode.window.showInformationMessage('Exported image successfully to ' + exportData.output.path)
+          vscode.window.showInformationMessage(`Exported successfully "${exportData.output.fileName}" to ${exportData.output.path}`)
         } catch (error: any) {
           vscode.window.showErrorMessage(
             'Better SVG: Error in export!\n' +
@@ -276,6 +276,9 @@ function parseExportData (exportData: string) {
       typeof resolution.imgHeight !== 'number' ||
       typeof resolution.imgWidth !== 'number') throw new Error('Invalid type for export data, expected number')
 
+  // Keep Unicode letters and numbers plus underscore and hyphen. Fallback to a timestamped name when empty.
+  const sanitizedFileName = output.fileName.replace(/[^^\p{L}\p{N}_-]+/gu, '')
+  output.fileName = sanitizedFileName || `file-${Date.now()}`
   fit = fitOptions.some(e => e === fit) ? fit : 'cover'
   format = formatOptions.some(e => e === format) ? format : 'webp'
   qualityPercent = clamp(1, 100, qualityPercent)

@@ -18,25 +18,26 @@ import * as vscode from 'vscode'
 import fs from 'fs'
 import sharp, { type Sharp } from 'sharp'
 
-type formatOptions = 'jpeg' | 'png' | 'webp' | 'raw'
+type Formats = 'jpeg' | 'png' | 'webp' | 'raw'
 
 interface ExportData {
   svgContent: string;
-  pixelDensity: number;
-  qualityPercent: number;
+  density: number;
+  quality: number;
   output: {
     fileName: string;
     path: string;
     override: boolean;
   };
-  format: formatOptions;
+  format: Formats;
   fit: keyof sharp.FitEnum
   resolution: {
     imgHeight: number;
     imgWidth: number;
   };
 }
-
+const avalibleFitModes = ['cover', 'contain', 'fill', 'inside', 'outside']
+const avalibleFormats = ['jpeg', 'png', 'webp', 'raw']
 const jpegOptions: sharp.JpegOptions = {
   optimizeScans: true,
   optimiseCoding: true,
@@ -160,7 +161,7 @@ export function getWebViewHtml (
     throw error
   }
 }
-
+// This class manages the resources and event handlers of the web view, here it also handles communication with the webview
 class PanelManager {
   private static currentPanel: vscode.WebviewPanel | undefined
   private static currentState: string | undefined
@@ -169,7 +170,7 @@ class PanelManager {
     return PanelManager.currentPanel
   }
 
-  static setCurrentPnael (panel: vscode.WebviewPanel) {
+  static setCurrentPanel (panel: vscode.WebviewPanel) {
     PanelManager.currentPanel = panel
   }
 
@@ -188,6 +189,7 @@ class PanelManager {
   static async onDidChangeViewState (e: vscode.WebviewPanelOnDidChangeViewStateEvent) {
     if (!PanelManager.currentPanel) return
     if (!PanelManager.currentPanel.visible) return
+    // In this context, a message is sent to the WebView to restore its last saved state before closing the WebView
     PanelManager.currentPanel.webview.postMessage({
       type: 'setState',
       state: PanelManager.getState()
@@ -198,6 +200,12 @@ class PanelManager {
     let uri: vscode.Uri[] | undefined
     switch (message.type) {
       case 'sendContext':
+        /*
+        In this context we receive an object from the WebView which contains the most recent state of all its elements,
+        we will do you the favor of saving it here in our small drawer for when you need it returned later.
+        Because he always loses haha
+        */
+        if (!message.state) return
         PanelManager.saveState(message.state)
         break
       case 'openFileDialog':
@@ -206,6 +214,7 @@ class PanelManager {
           canSelectFiles: false,
           canSelectMany: false,
         })
+        // We receive a request to open for File Explorer, as a response we send a string with the selected path
         if (!uri || !uri[0]) return
         PanelManager.currentPanel?.webview.postMessage({
           type: 'fileSystem',
@@ -217,7 +226,8 @@ class PanelManager {
         break
       case 'export':
         try {
-          const exportData = parseExportData(message.data)
+          if (!message.data) throw new Error('No data provided from WebView')
+          const exportData = dataParser(message.data)
           await SvgToImage(exportData)
           vscode.window.showInformationMessage(`Exported successfully "${exportData.output.fileName}" to ${exportData.output.path}`)
         } catch (error: any) {
@@ -235,15 +245,17 @@ class PanelManager {
     PanelManager.clear()
   }
 }
-
-export async function exportToImage (context: vscode.ExtensionContext, svgContent: string) {
+// This is the main post, here I declare the main logic as well as the triggers events of my webview
+export async function exportToImageHandle (context: vscode.ExtensionContext, svgContent: string) {
+  if (!svgContent || svgContent.length < 1) throw new Error('SVG is empty')
   let currentPanel = PanelManager.getCurrentPanel()
-  // If there is no current panel, create one
+
   const activePanel = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.viewColumn : undefined
 
   if (currentPanel) {
     currentPanel.reveal(activePanel)
     currentPanel.webview.html = getWebViewHtml(currentPanel.webview, context.extensionUri, svgContent)
+    // In this context, a message is sent to the WebView to restore its last saved state before closing the WebView
     currentPanel.webview.postMessage({
       type: 'setState',
       state: PanelManager.getState()
@@ -257,97 +269,90 @@ export async function exportToImage (context: vscode.ExtensionContext, svgConten
     )
     currentPanel.webview.html = getWebViewHtml(currentPanel.webview, context.extensionUri, svgContent)
     currentPanel.iconPath = vscode.Uri.joinPath(context.extensionUri, 'static', 'better-svg.webp')
-    PanelManager.setCurrentPnael(currentPanel)
+    PanelManager.setCurrentPanel(currentPanel)
     currentPanel.onDidChangeViewState(PanelManager.onDidChangeViewState, null, context.subscriptions)
     currentPanel.webview.onDidReceiveMessage(PanelManager.onDidReceiveMessage, null, context.subscriptions)
     currentPanel.onDidDispose(PanelManager.onDIdDispose, null, context.subscriptions)
   }
 }
-
+// clamp a number between min and max values, inclusive. Min >= Value <= Max
 const clamp = (min: number, max: number, value: number) => Math.min(max, Math.max(min, value))
 
-function parseExportData (exportData: string) {
-  let { fit, format, output, pixelDensity, qualityPercent, resolution, svgContent } = JSON.parse(exportData) as ExportData
-  const fitOptions = ['cover', 'contain', 'fill', 'inside', 'outside']
-  const formatOptions = ['jpeg', 'png', 'webp', 'raw']
+// This function is responsible for cleaning the data a bit before it is consumed by the main function
+function dataParser (exportData: string) {
+  let { fit, format, output, density, quality, resolution, svgContent } = JSON.parse(exportData) as ExportData
 
-  if (typeof qualityPercent !== 'number' ||
-      typeof pixelDensity !== 'number' ||
+  if (typeof quality !== 'number' ||
+      typeof density !== 'number' ||
       typeof resolution.imgHeight !== 'number' ||
       typeof resolution.imgWidth !== 'number') throw new Error('Invalid type for export data, expected number')
 
   // Keep Unicode letters and numbers plus underscore and hyphen. Fallback to a timestamped name when empty.
   const sanitizedFileName = output.fileName.replace(/[^^\p{L}\p{N}_-]+/gu, '')
+
   output.fileName = sanitizedFileName || `file-${Date.now()}`
-  fit = fitOptions.some(e => e === fit) ? fit : 'cover'
-  format = formatOptions.some(e => e === format) ? format : 'webp'
-  qualityPercent = clamp(1, 100, qualityPercent)
-  pixelDensity = clamp(1, 10000, pixelDensity)
+  fit = avalibleFitModes.some(e => e === fit) ? fit : 'cover'
+  format = avalibleFormats.some(e => e === format) ? format : 'webp'
+  quality = clamp(1, 100, quality)
+  density = clamp(1, 10000, density)
   resolution.imgHeight = clamp(16, 8192, resolution.imgHeight)
   resolution.imgWidth = clamp(16, 8192, resolution.imgWidth)
 
-  if (svgContent.length > 1024 * 1024) throw new Error('SVG is too large to export')
-  else if (svgContent.length < 1) throw new Error('SVG is empty')
+  if (svgContent.length < 1) throw new Error('SVG is empty')
 
   return {
     fit,
     format,
     output,
-    pixelDensity,
-    qualityPercent,
+    density,
+    quality,
     resolution,
     svgContent
   }
 }
 
 async function SvgToImage (exportData: ExportData) {
-  const svgData = new Uint8Array(Buffer.from(exportData.svgContent))
+  const { svgContent, density, quality, resolution, output, fit, format } = exportData
+  const svgData = new Uint8Array(Buffer.from(svgContent))
+
   const sharpInstance = sharp(svgData, {
-    density: exportData.pixelDensity,
+    density,
     animated: false,
-    svg: {
-      highBitdepth: true,
-    },
+    svg: { highBitdepth: true },
   }).resize(
-    exportData.resolution.imgWidth,
-    exportData.resolution.imgHeight,
+    resolution.imgWidth,
+    resolution.imgHeight,
     {
       fastShrinkOnLoad: true,
-      fit: exportData.fit,
-      background: {
-        r: 255,
-        g: 255,
-        b: 255,
-        alpha: 0,
-      }
+      fit,
+      background: { r: 255, g: 255, b: 255, alpha: 0 }
     }
   )
   let formatedImage: Sharp
-  let extension: string
-  switch (exportData.format) {
+  switch (format) {
     case 'jpeg':
-      formatedImage = sharpInstance.jpeg({ ...jpegOptions, quality: exportData.qualityPercent })
-      extension = '.jpg'
+      formatedImage = sharpInstance.jpeg({ ...jpegOptions, quality })
       break
     case 'png':
-      formatedImage = sharpInstance.png({ ...pngOptions, quality: exportData.qualityPercent })
-      extension = '.png'
+      formatedImage = sharpInstance.png({ ...pngOptions, quality })
       break
     case 'webp':
-      formatedImage = sharpInstance.webp({ ...webpOptions, quality: exportData.qualityPercent })
-      extension = '.webp'
-      break
-    case 'raw':
-      formatedImage = sharpInstance
-      extension = '.raw'
+      formatedImage = sharpInstance.webp({ ...webpOptions, quality })
       break
     default:
       formatedImage = sharpInstance
-      extension = '.raw'
       break
   }
-  const outputPath = exportData.output.path.split('/')
-  outputPath.push(exportData.output.fileName + extension)
+
+  let fsPath = output.path
+  if (fsPath === './') {
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0].uri.fsPath
+    if (!workspaceFolder) throw new Error('No workspace folder found, please select a folder')
+    fsPath = workspaceFolder
+  } else {
+    fsPath = output.path.replace('/', '//')
+    if (!fs.existsSync(fsPath)) throw new Error(`Path ${fsPath} does not exist`)
+  }
   const buffer = await formatedImage.ensureAlpha().toBuffer()
-  fs.writeFileSync(outputPath.join('//'), buffer)
+  fs.writeFileSync(`${fsPath}//${exportData.output.fileName}.${format}`, buffer)
 }

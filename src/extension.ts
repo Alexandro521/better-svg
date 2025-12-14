@@ -20,7 +20,7 @@ import { SvgGutterPreview, SvgHoverProvider } from './svgGutterPreview'
 import { optimize } from 'svgo/browser'
 import { prepareForOptimization, finalizeAfterOptimization } from './svgTransform'
 import { SUPPORTED_LANGUAGES } from './consts'
-import { exportToImage } from './svgExportToImage'
+import { exportToImageHandle } from './svgExportToImage'
 
 let previewProvider: SvgPreviewProvider
 let gutterPreview: SvgGutterPreview
@@ -259,7 +259,7 @@ export function activate (context: vscode.ExtensionContext) {
     // Register command to export SVG to image
     context.subscriptions.push(
       vscode.commands.registerCommand('betterSvg.exportToImage', async (svgContent: string) => {
-        await exportToImage(context, svgContent)
+        await exportToImageHandle(context, svgContent)
       })
     )
   } catch (error: any) {

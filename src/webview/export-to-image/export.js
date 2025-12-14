@@ -60,18 +60,18 @@ disposeBtn.addEventListener('click', (e) => {
 exportBtn.addEventListener('click', (e) => {
   const exportData = {
     svgContent: svgContainer.querySelector('svg').outerHTML,
-    pixelDensity: Number(pixelDensity.value) ?? 300,
-    qualityPercent: Number(qualityPercent.value) ?? 80,
+    density: Number(pixelDensity.value) ?? 300,
+    quality: Number(qualityPercent.value) ?? 80,
     output: {
       fileName: fileName.value,
       path: outpath.getAttribute('value') ?? './',
-      override: true,
+      override: true, // TODO: Implement this later
     },
     format: exportFormats.querySelector('.current-value').getAttribute('value') ?? 'webp',
     fit: fitOptions.querySelector('.current-value').getAttribute('value') ?? 'cover',
     resolution: {
-      imgHeight: Number(imgHeight.value) ?? 640,
-      imgWidth: Number(imgWidth.value) ?? 480,
+      imgHeight: Number(imgHeight.value) ?? 64,
+      imgWidth: Number(imgWidth.value) ?? 64,
     },
   }
   vscode.postMessage({

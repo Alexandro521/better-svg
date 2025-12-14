@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,42 +26,71 @@ limitations under the License.
 
 <body>
     <main>
-        
-    <section class="main">
-        <div class="head">
-            <div id="icon">
-                <img src="{{iconUri}}"  alt="better svg icon">
-            </div>
-            <h1>Export to image</h1>
-        </div>
-        <div class="parameters">
 
-            <div class="boxing">
-                <div class="head" title="razterizer quality per pixel">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-grid-dots"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M19 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M5 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M19 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
-                    <span class="title" title="number representing the DPI for vector images in the range 1 to 100000.">Pixel density</span>
+        <section class="main">
+            <div class="head">
+                <div id="icon">
+                    <img src="{{iconUri}}" alt="better svg icon">
                 </div>
-                <input id="pixel-density" class="pixel-density" value="300" type="number" min="1" max='10000'>
-
+                <h1>Export to image</h1>
             </div>
+            <div class="parameters">
 
-            <div class="boxing">
-                <div class="head" title="compression image level more quality -> more size">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-aspect-ratio"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 5m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M7 12v-3h3" /><path d="M17 12v3h-3" /></svg>
-                    <span class="title" title="Compression image level more quality -> more size">Quality</span>
+                <div class="boxing">
+                    <div class="head">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-grid-dots">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M5 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                            <path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                            <path d="M19 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                            <path d="M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                            <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                            <path d="M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                            <path d="M5 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                            <path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                            <path d="M19 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                        </svg>
+                        <span class="title"
+                            title="number representing the DPI for vector images in the range 1 to 100000.">Density</span>
+                    </div>
+                    <input id="pixel-density" class="pixel-density" value="300" type="number" min="1" max='10000'>
+
                 </div>
-                <input id="quality-percent" class="quality-percent" value="80" type="number" min="10" max='100'>
 
-            </div>
+                <div class="boxing">
+                    <div class="head" title="compression image level more quality -> more size">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-aspect-ratio">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M3 5m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                            <path d="M7 12v-3h3" />
+                            <path d="M17 12v3h-3" />
+                        </svg>
+                        <span class="title" title="Compression image level, more quality -> more size">Quality</span>
+                    </div>
+                    <input id="quality-percent" class="quality-percent" value="80" type="number" min="10" max='100'>
 
-
-            <div class="boxing">
-                <div class="head">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-photo"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8h.01" /><path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z" /><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5" /><path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3" /></svg>
-                    <span class="title">To format</span>
                 </div>
-       
+
+
+                <div class="boxing">
+                    <div class="head" title="The image format in which the SVG file will be exported">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-photo">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M15 8h.01" />
+                            <path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z" />
+                            <path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5" />
+                            <path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3" />
+                        </svg>
+                        <span class="title">Output Format</span>
+                    </div>
+
 
                     <div name="export" id="format-export" class="select format-export" title="format to export">
                         <span class="current-value" value="webp">
@@ -89,13 +117,20 @@ limitations under the License.
                         </div>
                     </div>
 
-            </div>
-
-            <div class="boxing">
-                <div class="head">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-aspect-ratio"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 5m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M7 12v-3h3" /><path d="M17 12v3h-3" /></svg>
-                    <span class="title">reszise</span>
                 </div>
+
+                <div class="boxing">
+                    <div class="head" title="When both a width and height are provided, the possible methods by which the image should fit these are">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-aspect-ratio">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M3 5m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+                            <path d="M7 12v-3h3" />
+                            <path d="M17 12v3h-3" />
+                        </svg>
+                        <span class="title">rezise</span>
+                    </div>
                     <div name="export" id="image-fit" class="select" title="format to export">
                         <span class="current-value" value="cover">
                             cover
@@ -114,122 +149,150 @@ limitations under the License.
                                 d="M18 9c.852 0 1.297 .986 .783 1.623l-.076 .084l-6 6a1 1 0 0 1 -1.32 .083l-.094 -.083l-6 -6l-.083 -.094l-.054 -.077l-.054 -.096l-.017 -.036l-.027 -.067l-.032 -.108l-.01 -.053l-.01 -.06l-.004 -.057v-.118l.005 -.058l.009 -.06l.01 -.052l.032 -.108l.027 -.067l.07 -.132l.065 -.09l.073 -.081l.094 -.083l.077 -.054l.096 -.054l.036 -.017l.067 -.027l.108 -.032l.053 -.01l.06 -.01l.057 -.004l12.059 -.002z" />
                         </svg>
                         <div class="options hidden">
-                            <span value="cover" class="option" id="cover-option" title="(default) Preserving aspect ratio, attempt to ensure the image covers both provided dimensions by cropping/clipping to fit.">cover</span>
-                            <span value="contain" class="option" id="contain-option" title="Preserving aspect ratio, contain within both provided dimensions using “letterboxing” where necessary.">contain</span>
-                            <span value="fill" class="option" id="fill-option" title="Ignore the aspect ratio of the input and stretch to both provided dimensions.">fill</span>
-                            <span value="inside" class="option" id="inside-option" title="Preserving aspect ratio, resize the image to be as large as possible while ensuring its dimensions are less than or equal to both those specified.">inside</span>
-                            <span value="outside" class="option" id="outside-option" title="Preserving aspect ratio, resize the image to be as small as possible while ensuring its dimensions are greater than or equal to both those specified.">outside</span>
+                            <span value="cover" class="option" id="cover-option"
+                                title="(default) Preserving aspect ratio, attempt to ensure the image covers both provided dimensions by cropping/clipping to fit.">cover</span>
+                            <span value="contain" class="option" id="contain-option"
+                                title="Preserving aspect ratio, contain within both provided dimensions using “letterboxing” where necessary.">contain</span>
+                            <span value="fill" class="option" id="fill-option"
+                                title="Ignore the aspect ratio of the input and stretch to both provided dimensions.">fill</span>
+                            <span value="inside" class="option" id="inside-option"
+                                title="Preserving aspect ratio, resize the image to be as large as possible while ensuring its dimensions are less than or equal to both those specified.">inside</span>
+                            <span value="outside" class="option" id="outside-option"
+                                title="Preserving aspect ratio, resize the image to be as small as possible while ensuring its dimensions are greater than or equal to both those specified.">outside</span>
                         </div>
                     </div>
-                
+
+                </div>
+
             </div>
-
-        </div>
-        <div class="head" title="resolution of image">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-dimensions"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 5h11" /><path d="M12 7l2 -2l-2 -2" /><path d="M5 3l-2 2l2 2" /><path d="M19 10v11" /><path d="M17 19l2 2l2 -2" /><path d="M21 12l-2 -2l-2 2" /><path d="M3 10m0 2a2 2 0 0 1 2 -2h7a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2z" /></svg>
-            <span class="title">Resolution</span>
-        </div>
-        <div class="resolution-box" id="res-box">
-            <div name="resolution options" id="resolutions" class="select" title="format to export">
-                <span class="current-value" value="640,480" id="res-value">
-                    480p
-                </span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
-                    class="icon icon-tabler icons-tabler-filled icon-tabler-caret-up hidden">
+            <div class="head" title="resolution of image, in pixels">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-dimensions">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path
-                        d="M11.293 7.293a1 1 0 0 1 1.32 -.083l.094 .083l6 6l.083 .094l.054 .077l.054 .096l.017 .036l.027 .067l.032 .108l.01 .053l.01 .06l.004 .057l.002 .059l-.002 .059l-.005 .058l-.009 .06l-.01 .052l-.032 .108l-.027 .067l-.07 .132l-.065 .09l-.073 .081l-.094 .083l-.077 .054l-.096 .054l-.036 .017l-.067 .027l-.108 .032l-.053 .01l-.06 .01l-.057 .004l-.059 .002h-12c-.852 0 -1.297 -.986 -.783 -1.623l.076 -.084l6 -6z" />
+                    <path d="M3 5h11" />
+                    <path d="M12 7l2 -2l-2 -2" />
+                    <path d="M5 3l-2 2l2 2" />
+                    <path d="M19 10v11" />
+                    <path d="M17 19l2 2l2 -2" />
+                    <path d="M21 12l-2 -2l-2 2" />
+                    <path d="M3 10m0 2a2 2 0 0 1 2 -2h7a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2z" />
                 </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
-                    class="icon icon-tabler icons-tabler-filled icon-tabler-caret-down">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path
-                        d="M18 9c.852 0 1.297 .986 .783 1.623l-.076 .084l-6 6a1 1 0 0 1 -1.32 .083l-.094 -.083l-6 -6l-.083 -.094l-.054 -.077l-.054 -.096l-.017 -.036l-.027 -.067l-.032 -.108l-.01 -.053l-.01 -.06l-.004 -.057v-.118l.005 -.058l.009 -.06l.01 -.052l.032 -.108l.027 -.067l.07 -.132l.065 -.09l.073 -.081l.094 -.083l.077 -.054l.096 -.054l.036 -.017l.067 -.027l.108 -.032l.053 -.01l.06 -.01l.057 -.004l12.059 -.002z" />
-                </svg>
-                <div class="options hidden resolution-image">
-                    <span value="custom" class="option">custom</span>
-                    <span value="16,16" class="option">16×16 (favicon)</span>
-                    <span value="32,32" class="option">32×32 (favicon / icon)</span>
-                    <span value="48,48" class="option">48×48 (small icon)</span>
-                    <span value="64,64" class="option">64×64 (app icon)</span>
-                    <span value="128,128" class="option">128×128 (icon)</span>
-                    <span value="256,256" class="option">256×256 (icon / app)</span>
-                    <span value="512,512" class="option">512×512 (store icon / high-res)</span>
-                    
-                    <span value="320,240" class="option">320×240 (QVGA)</span>
-                    <span value="640,480" class="option">640×480 (VGA / 480p 4:3)</span>
-                    <span value="854,480" class="option">854×480 (480p widescreen)</span>
-                    <span value="1280,720" class="option">1280×720 (720p / HD)</span>
-                    <span value="1366,768" class="option">1366×768 (common laptop)</span>
-                    <span value="1440,900" class="option">1440×900 (laptop)</span>
-                    <span value="1536,864" class="option">1536×864 (laptop)</span>
-                    <span value="1920,1080" class="option">1920×1080 (1080p / Full HD)</span>
-                    <span value="2560,1440" class="option">2560×1440 (1440p / QHD / 2K)</span>
-                    <span value="3840,2160" class="option">3840×2160 (2160p / 4K UHD)</span>
-                    <span value="5120,2880" class="option">5120×2880 (5K)</span>
-                    
-                    <span value="320,568" class="option">320×568 (small mobile)</span>
-                    <span value="360,640" class="option">360×640 (common Android mobile)</span>
-                    <span value="375,667" class="option">375×667 (iPhone 8)</span>
-                    <span value="390,844" class="option">390×844 (iPhone 12/13/14 pro)</span>
-                    <span value="720,1280" class="option">720×1280 (mobile portrait)</span>
-                    
-                    <span value="768,1024" class="option">768×1024 (iPad portrait)</span>
-                    <span value="800,1280" class="option">800×1280 (tablet)</span>
-                    
-                    <span value="1080,1080" class="option">1080×1080 (Instagram square)</span>
-                    <span value="1080,1920" class="option">1080×1920 (Instagram / Stories / Portrait)</span>
-                    <span value="1200,630" class="option">1200×630 (Open Graph / link preview)</span>
-                    <span value="820,312" class="option">820×312 (Facebook cover / header small)</span>
-                    </div>
-                    </div>
-
-            <div class="res-box resolution-container no-user-input">
-                <input id="img-height" value="640" type="number" min="16" max="10000">
-                <span>×</span>
-                <input id="img-width" value="480" type="number" min="16" max="10000">
+                <span class="title">Resolution</span>
             </div>
-        </div>
-        <div class="head" title="filename" > 
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-tag"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M3 6v5.172a2 2 0 0 0 .586 1.414l7.71 7.71a2.41 2.41 0 0 0 3.408 0l5.592 -5.592a2.41 2.41 0 0 0 0 -3.408l-7.71 -7.71a2 2 0 0 0 -1.414 -.586h-5.172a3 3 0 0 0 -3 3z" /></svg>
-            <span class="title">filename</span>
-        </div>
-        <div class="output-data filename">
-            <input type="text" id="filename" value="untitled">
-        </div>
-        <div class="head" title="path to export image" > 
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" /></svg>
-            <span class="title">output path</span>
-        </div>
+            <div class="resolution-box" id="res-box">
+                <div name="resolution options" id="resolutions" class="select" title="format to export">
+                    <span class="current-value" value="640,480" id="res-value">
+                        480p
+                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                        fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-caret-up hidden">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path
+                            d="M11.293 7.293a1 1 0 0 1 1.32 -.083l.094 .083l6 6l.083 .094l.054 .077l.054 .096l.017 .036l.027 .067l.032 .108l.01 .053l.01 .06l.004 .057l.002 .059l-.002 .059l-.005 .058l-.009 .06l-.01 .052l-.032 .108l-.027 .067l-.07 .132l-.065 .09l-.073 .081l-.094 .083l-.077 .054l-.096 .054l-.036 .017l-.067 .027l-.108 .032l-.053 .01l-.06 .01l-.057 .004l-.059 .002h-12c-.852 0 -1.297 -.986 -.783 -1.623l.076 -.084l6 -6z" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                        fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-caret-down">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path
+                            d="M18 9c.852 0 1.297 .986 .783 1.623l-.076 .084l-6 6a1 1 0 0 1 -1.32 .083l-.094 -.083l-6 -6l-.083 -.094l-.054 -.077l-.054 -.096l-.017 -.036l-.027 -.067l-.032 -.108l-.01 -.053l-.01 -.06l-.004 -.057v-.118l.005 -.058l.009 -.06l.01 -.052l.032 -.108l.027 -.067l.07 -.132l.065 -.09l.073 -.081l.094 -.083l.077 -.054l.096 -.054l.036 -.017l.067 -.027l.108 -.032l.053 -.01l.06 -.01l.057 -.004l12.059 -.002z" />
+                    </svg>
+                    <div class="options hidden resolution-image">
+                        <span value="custom" class="option">custom</span>
+                        <span value="16,16" class="option">16×16 (favicon)</span>
+                        <span value="32,32" class="option">32×32 (favicon / icon)</span>
+                        <span value="48,48" class="option">48×48 (small icon)</span>
+                        <span value="64,64" class="option">64×64 (app icon)</span>
+                        <span value="128,128" class="option">128×128 (icon)</span>
+                        <span value="256,256" class="option">256×256 (icon / app)</span>
+                        <span value="512,512" class="option">512×512 (store icon / high-res)</span>
 
-        <div class="output-data outpath">
+                        <span value="320,240" class="option">320×240 (QVGA)</span>
+                        <span value="640,480" class="option">640×480 (VGA / 480p 4:3)</span>
+                        <span value="854,480" class="option">854×480 (480p widescreen)</span>
+                        <span value="1280,720" class="option">1280×720 (720p / HD)</span>
+                        <span value="1366,768" class="option">1366×768 (common laptop)</span>
+                        <span value="1440,900" class="option">1440×900 (laptop)</span>
+                        <span value="1536,864" class="option">1536×864 (laptop)</span>
+                        <span value="1920,1080" class="option">1920×1080 (1080p / Full HD)</span>
+                        <span value="2560,1440" class="option">2560×1440 (1440p / QHD / 2K)</span>
+                        <span value="3840,2160" class="option">3840×2160 (2160p / 4K UHD)</span>
+                        <span value="5120,2880" class="option">5120×2880 (5K)</span>
 
-            <span id="outpath" value="./">
-                /
-            </span>
+                        <span value="320,568" class="option">320×568 (small mobile)</span>
+                        <span value="360,640" class="option">360×640 (common Android mobile)</span>
+                        <span value="375,667" class="option">375×667 (iPhone 8)</span>
+                        <span value="390,844" class="option">390×844 (iPhone 12/13/14 pro)</span>
+                        <span value="720,1280" class="option">720×1280 (mobile portrait)</span>
 
-            <button id="btn-set-dir">
+                        <span value="768,1024" class="option">768×1024 (iPad portrait)</span>
+                        <span value="800,1280" class="option">800×1280 (tablet)</span>
+
+                        <span value="1080,1080" class="option">1080×1080 (Instagram square)</span>
+                        <span value="1080,1920" class="option">1080×1920 (Instagram / Stories / Portrait)</span>
+                        <span value="1200,630" class="option">1200×630 (Open Graph / link preview)</span>
+                        <span value="820,312" class="option">820×312 (Facebook cover / header small)</span>
+                    </div>
+                </div>
+
+                <div class="res-box resolution-container no-user-input">
+                    <input id="img-height" value="640" type="number" min="16" max="10000">
+                    <span>×</span>
+                    <input id="img-width" value="480" type="number" min="16" max="10000">
+                </div>
+            </div>
+            <div class="head" title="filename, without extension">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-tag">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M7.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                    <path
+                        d="M3 6v5.172a2 2 0 0 0 .586 1.414l7.71 7.71a2.41 2.41 0 0 0 3.408 0l5.592 -5.592a2.41 2.41 0 0 0 0 -3.408l-7.71 -7.71a2 2 0 0 0 -1.414 -.586h-5.172a3 3 0 0 0 -3 3z" />
+                </svg>
+                <span class="title">filename</span>
+            </div>
+            <div class="output-data filename">
+                <input type="text" id="filename" value="untitled">
+            </div>
+            <div class="head" title="select output path">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="icon icon-tabler icons-tabler-outline icon-tabler-folder">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                     <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
                 </svg>
-            </button>
-        </div>
+                <span class="title">output path</span>
+            </div>
 
-        <div class="actions">
-            <button id="export-btn" class="export-btn btn">
-                Export
-            </button>
-            <button id="dispose-btn" class="dispose-btn btn">
-                Quit
-            </button>
+            <div class="output-data outpath">
+
+                <span id="outpath" value="./">
+                    /
+                </span>
+
+                <button id="btn-set-dir">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-folder">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="actions">
+                <button id="export-btn" class="export-btn btn">
+                    Export
+                </button>
+                <button id="dispose-btn" class="dispose-btn btn">
+                    Quit
+                </button>
+            </div>
+        </section>
+        <div class="preview-content" id="previewSvg">
+            {{svgContent}}
         </div>
-    </section>
-    <div class="preview-content" id="previewSvg">
-        {{svgContent}}
-    </div>
     </main>
     <script type="module" src="{{moduleScriptUri}}"></script>
     <script type="module" src='{{exportScriptUri}}'></script>

@@ -16,6 +16,7 @@
 
 import * as vscode from 'vscode'
 import fs from 'fs'
+import path from 'path'
 import sharp, { type Sharp } from 'sharp'
 
 type Formats = 'jpeg' | 'png' | 'webp' | 'raw'
@@ -345,14 +346,15 @@ async function SvgToImage (exportData: ExportData) {
   }
 
   let fsPath = output.path
+  const fileName = `${output.fileName}.${format}`
   if (fsPath === './') {
     const workspaceFolder = vscode.workspace.workspaceFolders?.[0].uri.fsPath
     if (!workspaceFolder) throw new Error('No workspace folder found, please select a folder')
-    fsPath = workspaceFolder
+    fsPath = path.join(workspaceFolder, fileName)
   } else {
-    fsPath = output.path.replace('/', '//')
-    if (!fs.existsSync(fsPath)) throw new Error(`Path ${fsPath} does not exist`)
+    if (!fs.existsSync(output.path)) throw new Error(`Path ${output.path} does not exist`)
+    fsPath = path.join(output.path, fileName)
   }
   const buffer = await formatedImage.ensureAlpha().toBuffer()
-  fs.writeFileSync(`${fsPath}//${exportData.output.fileName}.${format}`, buffer)
+  fs.writeFileSync(fsPath, buffer)
 }

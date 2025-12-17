@@ -341,7 +341,7 @@ async function SvgToImage (exportData: ExportData) {
       formatedImage = sharpInstance.webp({ ...webpOptions, quality })
       break
     default:
-      formatedImage = sharpInstance
+      formatedImage = sharpInstance.raw()
       break
   }
 

@@ -67,9 +67,12 @@ export class SvgHoverProvider implements vscode.HoverProvider {
         }
 
         let svgContent = originalSvg
+        const options = {
+          useCamelCase: ['javascriptreact', 'typescriptreact'].includes(document.languageId)
+        }
 
         // Convert JSX syntax to valid SVG
-        svgContent = convertJsxToSvg(svgContent)
+        svgContent = convertJsxToSvg(svgContent, options)
 
         // Add xmlns if missing (do this early so SVG is valid)
         // Check ONLY inside the opening <svg ... > tag
@@ -91,6 +94,14 @@ export class SvgHoverProvider implements vscode.HoverProvider {
 
         // Ensure minimum size for visibility in hover
         svgContent = this.ensureMinimumSize(svgContent, 128)
+
+        // Validate that the SVG is likely to be renderable. 
+        // If it still contains JSX-like braces (outside of <style> tags), 
+        // it's likely to show a broken image, so we'd rather show nothing.
+        const validationContent = svgContent.replace(/<style[\s\S]*?<\/style>/gi, '')
+        if (validationContent.includes('{') || validationContent.includes('}')) {
+          return null
+        }
 
         // Encode SVG for data URI - use base64 for better compatibility
         const base64Svg = Buffer.from(svgContent).toString('base64')
@@ -272,9 +283,12 @@ export class SvgGutterPreview {
       const range = new vscode.Range(startPos, startPos)
 
       let svgContent = match[0]
+      const options = {
+        useCamelCase: ['javascriptreact', 'typescriptreact'].includes(editor.document.languageId)
+      }
 
       // Convert JSX syntax to valid SVG
-      svgContent = convertJsxToSvg(svgContent)
+      svgContent = convertJsxToSvg(svgContent, options)
 
       // Add xmlns if missing (do this early so SVG is valid)
       // Check ONLY inside the opening <svg ... > tag
@@ -298,6 +312,12 @@ export class SvgGutterPreview {
 
       // Ensure minimum size for gutter icon
       svgContent = this.ensureMinimumSize(svgContent, 16)
+
+      // Validate that the SVG is likely to be renderable.
+      const validationContent = svgContent.replace(/<style[\s\S]*?<\/style>/gi, '')
+      if (validationContent.includes('{') || validationContent.includes('}')) {
+        continue
+      }
 
       // Encode SVG content for data URI - use base64 for better compatibility
       const base64Svg = Buffer.from(svgContent).toString('base64')

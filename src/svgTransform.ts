@@ -222,7 +222,9 @@ export function convertJsxToSvg (svgContent: string): string {
   // Rename 'style' attribute to prevent SVGO from trying to parse JSX objects (Base64) as CSS
   // Only rename if it seems to be a JSX style (or we can just rename all styles to be safe and avoid minification side-effects on expressions)
   // We'll rename all 'style=' to 'data-better-svg-style='
-  svgContent = svgContent.replace(/\bstyle=/g, 'data-better-svg-style=')
+  // Use a regex that ensures we don't match 'font-style=' or other hyphenated attributes ending in style
+  // We check that it's preceded by whitespace or start of string
+  svgContent = svgContent.replace(/(\s|^)style=/g, '$1data-better-svg-style=')
 
   return svgContent
 }

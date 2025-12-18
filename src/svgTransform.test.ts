@@ -45,9 +45,11 @@ describe('isJsxSvg', () => {
 })
 
 describe('convertJsxToSvg', () => {
-  it('should convert expression values {number} to quoted strings', () => {
+  it('should convert expression values {number} to quoted strings (Base64 encoded)', () => {
     const input = '<svg><path strokeWidth={2} /></svg>'
-    const expected = '<svg><path stroke-width="2" /></svg>'
+    // Base64 for "2" is "Mg=="
+    // Protected by generic protector
+    const expected = '<svg><path data-better-svg-temp-stroke-width="__JSX_BASE64__Mg==__" /></svg>'
     assert.strictEqual(convertJsxToSvg(input), expected)
   })
 
@@ -107,7 +109,9 @@ describe('convertJsxToSvg', () => {
     assert.ok(result.includes('class='), 'should convert className to class')
     assert.ok(result.includes('stroke-linecap='), 'should convert strokeLinecap')
     assert.ok(result.includes('stroke-linejoin='), 'should convert strokeLinejoin')
-    assert.ok(result.includes('stroke-width="2"'), 'should convert strokeWidth={2}')
+    assert.ok(result.includes('stroke-linejoin='), 'should convert strokeLinejoin')
+    // Base64 for "2" is "Mg=="
+    assert.ok(result.includes('data-better-svg-temp-stroke-width="__JSX_BASE64__Mg==__"'), 'should convert strokeWidth={2}')
     assert.ok(!result.includes('className='), 'should not contain className')
     assert.ok(!result.includes('{2}'), 'should not contain expression syntax')
   })
@@ -212,7 +216,7 @@ describe('prepareForOptimization', () => {
 
     assert.strictEqual(result.wasJsx, true)
     assert.ok(result.preparedSvg.includes('class='))
-    assert.ok(result.preparedSvg.includes('stroke-width="2"'))
+    assert.ok(result.preparedSvg.includes('data-better-svg-temp-stroke-width="__JSX_BASE64__Mg==__"'))
   })
 
   it('should not modify standard SVG and return wasJsx: false', () => {
@@ -284,14 +288,15 @@ describe('edge cases', () => {
   it('should handle self-closing SVG elements', () => {
     const input = '<svg><circle strokeWidth={2} /><rect strokeWidth={3} /></svg>'
     const result = convertJsxToSvg(input)
-    assert.ok(result.includes('stroke-width="2"'))
-    assert.ok(result.includes('stroke-width="3"'))
+    assert.ok(result.includes('data-better-svg-temp-stroke-width="__JSX_BASE64__Mg==__"'))
+    assert.ok(result.includes('data-better-svg-temp-stroke-width="__JSX_BASE64__Mw==__"'))
   })
 
   it('should handle expression with variable name', () => {
     const input = '<svg><path strokeWidth={strokeSize} /></svg>'
     const result = convertJsxToSvg(input)
-    assert.ok(result.includes('stroke-width="strokeSize"'))
+    // Base64 for "strokeSize" is "c3Ryb2tlU2l6ZQ=="
+    assert.ok(result.includes('data-better-svg-temp-stroke-width="__JSX_BASE64__c3Ryb2tlU2l6ZQ==__"'))
   })
 
   it('should handle nested SVG elements', () => {
@@ -327,7 +332,7 @@ describe('edge cases', () => {
     const result = convertJsxToSvg(input)
     assert.ok(result.includes('class="icon"'))
     assert.ok(result.includes("stroke-linecap='round'"))
-    assert.ok(result.includes('stroke-width="2"'))
+    assert.ok(result.includes('stroke-width="__JSX_BASE64__Mg==__"'))
   })
 
   it('should handle nested brackets in expressions (e.g. onClick handlers)', () => {
@@ -335,9 +340,10 @@ describe('edge cases', () => {
     const result = convertJsxToSvg(input)
     
     // Check that we got a valid attribute format
-    // The inner quotes should be escaped as &quot;
-    assert.ok(result.includes('data-jsx-event-onClick="() =&gt; { console.log(&quot;click&quot;) }"'))
-    assert.ok(result.includes('stroke-width="2"'))
+    // Expression: () => { console.log("click") }
+    // Base64: ...
+    assert.ok(result.includes('data-better-svg-temp-onClick="__JSX_BASE64__'))
+    assert.ok(result.includes('stroke-width="__JSX_BASE64__Mg==__"'))
     
     // Check that we can round-trip it back
     // Simulate what SVGO might do (escape >)
@@ -367,12 +373,34 @@ describe('spread attributes', () => {
 
   it('should convert spread attributes in convertJsxToSvg', () => {
     const input = '<svg {...props}><path /></svg>'
-    const expected = '<svg data-spread-0="props"><path /></svg>'
+    // Base64 for "props" is "cHJvcHM="
+    // Spread attributes are also Base64 encoded, so they get protected!
+    const expected = '<svg data-better-svg-temp-data-spread-0="__JSX_BASE64__cHJvcHM=__"><path /></svg>'
     assert.strictEqual(convertJsxToSvg(input), expected)
   })
 
   it('should restore spread attributes in convertSvgToJsx', () => {
-    const input = '<svg data-spread-0="props"><path /></svg>'
+    // Note: restoreEncodedAttributes happens BEFORE restore spread logic.
+    // So convertSvgToJsx expects restored attribute names?
+    // Wait, convertSvgToJsx calls restoreEncodedAttributes (generic) FIRST.
+    // So it converts data-better-svg-temp-data-spread-0 to data-spread-0.
+    // Then spread logic picks it up.
+    // So input to convertSvgToJsx logic can be the protected version OR the raw version (if coming from tests).
+    // If we test the WHOLE flow (roundtrip), it works.
+    // If we directly test convertSvgToJsx with protected string, it should work.
+    
+    // Let's test what 'convertSvgToJsx' does.
+    // If input is PROTECTED spread:
+    const input = '<svg data-better-svg-temp-data-spread-0="__JSX_BASE64__cHJvcHM=__"><path /></svg>'
+    const expected = '<svg {...props}><path /></svg>'
+    assert.strictEqual(convertSvgToJsx(input), expected)
+  })
+
+  // Keep old test for legacy/unprotected case? 
+  // RestoreEncodedAttributes just restores known prefix. If it's not there, it does nothing.
+  // So data-spread-0 works too.
+  it('should restore unwrapped spread attributes (legacy check)', () => {
+    const input = '<svg data-spread-0="__JSX_BASE64__cHJvcHM=__"><path /></svg>'
     const expected = '<svg {...props}><path /></svg>'
     assert.strictEqual(convertSvgToJsx(input), expected)
   })
@@ -389,8 +417,8 @@ describe('spread attributes', () => {
     const svg = convertJsxToSvg(input)
     
     // Ensure we have distinct attributes
-    assert.ok(svg.includes('data-spread-0="props"'))
-    assert.ok(svg.includes('data-spread-1="user"'))
+    assert.ok(svg.includes('data-better-svg-temp-data-spread-0="__JSX_BASE64__cHJvcHM=__"'))
+    assert.ok(svg.includes('data-better-svg-temp-data-spread-1="__JSX_BASE64__dXNlcg==__"'))
     
     const output = convertSvgToJsx(svg)
     assert.strictEqual(output, input)
@@ -407,9 +435,8 @@ describe('spread attributes', () => {
     assert.strictEqual(isJsxSvg(input), true)
 
     const svg = convertJsxToSvg(input)
-    // onClick should be converted to string attribute with quotes escaped if needed
-    // In this case inner quotes are single quotes so they might stay as is or be friendly
-    assert.ok(svg.includes('data-jsx-event-onClick="() =&gt; { console.log(\'hola\') }"'))
+    // onClick should be converted to string attribute with Base64 encoded expression
+    assert.ok(svg.includes('data-better-svg-temp-onClick="__JSX_BASE64__'))
     assert.ok(svg.includes('stroke-linecap="round"'))
     
     const output = convertSvgToJsx(svg)
@@ -419,3 +446,171 @@ describe('spread attributes', () => {
     assert.strictEqual(output, expected)
   })
 })
+
+describe('Regressions & Edge Cases', () => {
+
+    it('should preserve className={className} (Base64 encoded)', () => {
+        const input = `
+            <svg className={className} xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+            <path d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z' />
+            <polyline points='9 22 9 12 15 12 15 22' />
+            </svg>`
+
+        // 1. Prepare
+        const { preparedSvg, wasJsx } = prepareForOptimization(input)
+        
+        // 2. Simulate SVGO (identity)
+        const optimizedSvg = preparedSvg 
+
+        // 3. Finalize
+        const finalResult = finalizeAfterOptimization(optimizedSvg, wasJsx)
+
+        assert.ok(finalResult.includes('className={className}'), `Expected className={className}, got: ${finalResult}`)
+        assert.ok(!finalResult.includes('className="className"'), 'Should not contain string literal className="className"')
+    })
+
+    it('should preserve style object style={{ color: "red" }}', () => {
+        const input = '<svg style={{ color: "red", marginTop: 10 }}><path /></svg>'
+        
+        const { preparedSvg, wasJsx } = prepareForOptimization(input)
+        
+        // Check intermediate state: style should be hidden from SVGO
+        assert.ok(preparedSvg.includes('data-better-svg-temp-style='), 'Style should be renamed')
+        assert.ok(!preparedSvg.includes(' style='), 'Original style attribute should be gone')
+
+        // Simulate SVGO
+        const optimizedSvg = preparedSvg 
+
+        const finalResult = finalizeAfterOptimization(optimizedSvg, wasJsx)
+        
+        assert.ok(finalResult.includes('style={{ color: "red", marginTop: 10 }}') || 
+                  finalResult.includes('style={{color:"red",marginTop:10}}'), 
+                  `Style object destroyed: ${finalResult}`)
+    })
+
+    it('should handle the specific Icon2 component causing issues', () => {
+        const input = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className={className} viewBox="0 0 24 24" style={{ color: 'red' }}><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="M12 8v8m-4-4h8"/></svg>`
+        
+        const { preparedSvg, wasJsx } = prepareForOptimization(input)
+        
+        // Verify key protections
+        assert.ok(preparedSvg.includes('data-better-svg-temp-style='))
+        // strokeWidth={2} -> encoded
+        // className={className} -> encoded className with Base64
+        // The original string has strokeWidth="2" (string), not expression {2}. 
+        // Wait, the user provided: strokeWidth="2" (string). So it stays as stroke-width="2".
+        // className={className} (expression). -> class="__JSX_BASE64...__"
+        
+        const optimizedSvg = preparedSvg
+        const finalResult = finalizeAfterOptimization(optimizedSvg, wasJsx)
+
+        // Verify restoration
+        assert.ok(finalResult.includes('className={className}'))
+        assert.ok(finalResult.includes("style={{ color: 'red' }}"))
+        // String attributes should remain camelCase in JSX if they map
+        assert.ok(finalResult.includes('strokeWidth="2"') || finalResult.includes('strokeWidth=\'2\''))
+    })
+
+    it('should preserve namespaced/dotted components like <motion.path /> if SVGO allows them', () => {
+        const input = '<svg><motion.path d="M0 0 h10" animate={{ x: 100 }} /></svg>'
+        const { preparedSvg, wasJsx } = prepareForOptimization(input)
+        const finalResult = finalizeAfterOptimization(preparedSvg, wasJsx)
+
+        assert.ok(finalResult.includes('<motion.path'), `motion.path lost: ${finalResult}`)
+        assert.ok(finalResult.includes('animate={{ x: 100 }}'), `animate prop lost: ${finalResult}`)
+    })
+})
+
+describe('Comments Handling', () => {
+    it('should handle JSX block comments {/* ... */}', () => {
+        const input = `
+            <svg>
+                {/* This is a comment */}
+                <path d="M0 0 h10" />
+            </svg>`
+        
+        const { preparedSvg, wasJsx } = prepareForOptimization(input)
+        
+        // Block comments should be removed or ignored, or converted to XML comments
+        // If they remain as {/* ... */}, SVGO will likely choke or treating them as text content.
+        // Ideally we strip them for optimization.
+        assert.ok(!preparedSvg.includes('{/*'), 'Block comment start should be gone or converted')
+        
+        // Even if we convert to XML comment <!-- -->, SVGO might remove comments by default.
+        // Let's verify structure is valid for SVGO.
+        // SVGO requires valid XML. <svg>{...}</svg> is not valid if {} are not tags.
+        // We will assert that the prepared string is clean of JSX comment syntax.
+    })
+
+    it('should handle JSX line comments // ... inside tag attributes', () => {
+        const input = `
+            <svg
+                // This is a line comment
+                width="24"
+                height="24"
+            >
+                <path />
+            </svg>`
+        
+        const { preparedSvg } = prepareForOptimization(input)
+        
+        assert.ok(!preparedSvg.includes('// This is a line comment'), 'Line comment should be removed')
+        assert.ok(preparedSvg.includes('width="24"'), 'Attributes should remain')
+    })
+})
+
+describe('Complex Components', () => {
+    it('should handle the ComplexIcon properly (stroke={color})', () => {
+        const input = `
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill='none'
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={\`icon \${className}\`}
+      style={{
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        transformOrigin: 'center'
+      }}
+      onClick={() => console.log('SVG Clicked')}
+      fontStyle="italic"
+      {...props}
+    >
+      <title>Complex Icon Test</title>
+      <circle cx="12" cy="12" r={size / 4} strokeDasharray="4 4" />
+      <path
+        d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+        strokeOpacity={0.8}
+      />
+      <g style={{ opacity: 0.9 }}>
+        <text
+            x="12"
+            y="20"
+            textAnchor="middle"
+            fontFamily="Arial"
+            fontSize="8"
+            fontStyle="normal"
+            fill="currentColor"
+        >
+            OK
+        </text>
+      </g>
+    </svg>`
+
+        const { preparedSvg, wasJsx } = prepareForOptimization(input)
+        const finalResult = finalizeAfterOptimization(preparedSvg, wasJsx)
+
+        // Check stroke={color}
+        assert.ok(finalResult.includes('stroke={color}'), `Expected stroke={color}, got: ${finalResult}`)
+        assert.ok(!finalResult.includes('__JSX_BASE64__'), 'Should not contain Base64 markers')
+    })
+})
+
+
+

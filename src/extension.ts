@@ -341,9 +341,12 @@ export async function optimizeSvgDocument (document: vscode.TextDocument) {
 export async function optimizeSvgInline (document: vscode.TextDocument, svgContent: string, range: vscode.Range) {
   try {
     const plugins = getSvgoPlugins(false)
+    const options = {
+      useCamelCase: ['javascriptreact', 'typescriptreact'].includes(document.languageId)
+    }
 
     // Prepare SVG for optimization (convert JSX to valid SVG if needed)
-    const { preparedSvg, wasJsx } = prepareForOptimization(svgContent)
+    const { preparedSvg, wasJsx } = prepareForOptimization(svgContent, options)
 
     const result = optimize(preparedSvg, {
       multipass: true,
@@ -351,7 +354,7 @@ export async function optimizeSvgInline (document: vscode.TextDocument, svgConte
     })
 
     // Convert back to JSX if the original was JSX
-    const finalSvg = finalizeAfterOptimization(result.data, wasJsx)
+    const finalSvg = finalizeAfterOptimization(result.data, wasJsx, options)
 
     const edit = new vscode.WorkspaceEdit()
     edit.replace(document.uri, range, finalSvg)

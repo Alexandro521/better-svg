@@ -25,6 +25,10 @@ export class SvgPreviewProvider implements vscode.WebviewViewProvider {
 
   constructor (private readonly context: vscode.ExtensionContext) {}
 
+  public get isVisible (): boolean {
+    return this._view?.visible ?? false
+  }
+
   public resolveWebviewView (
     webviewView: vscode.WebviewView,
     context: vscode.WebviewViewResolveContext,

@@ -108,7 +108,7 @@ export function activate (context: vscode.ExtensionContext) {
         const config = vscode.workspace.getConfiguration('betterSvg')
         const autoReveal = config.get<boolean>('autoReveal', true)
 
-        if (autoReveal) {
+        if (autoReveal && editor.document.uri.scheme === 'file' && previewProvider.isVisible) {
           vscode.commands.executeCommand('betterSvg.preview.focus')
         }
 
